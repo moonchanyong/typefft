@@ -1,66 +1,61 @@
 import baseComplexArray from './complex_array';
+export { FFTImageDataRGBA } from './fft_image';
 
 // Math constants and functions we need.
-const PI = Math.PI;
-const SQRT1_2 = Math.SQRT1_2;
+const PI: number = Math.PI;
+const SQRT1_2: number = Math.SQRT1_2;
 
-export function FFT(input) {
+export function FFT(input): ComplexArray {
   return ensureComplexArray(input).FFT();
 };
 
-export function InvFFT(input) {
+export function InvFFT(input): ComplexArray {
   return ensureComplexArray(input).InvFFT();
 };
 
-export function frequencyMap(input, filterer) {
+export function frequencyMap(input, filterer): ComplexArray {
   return ensureComplexArray(input).frequencyMap(filterer);
 };
 
 export class ComplexArray extends baseComplexArray {
-  FFT() {
+  FFT(): ComplexArray {
     return fft(this, false);
   }
 
-  InvFFT() {
+  InvFFT(): ComplexArray {
     return fft(this, true);
   }
 
   // Applies a frequency-space filter to input, and returns the real-space
   // filtered input.
   // filterer accepts freq, i, n and modifies freq.real and freq.imag.
-  frequencyMap(filterer) {
+  frequencyMap(filterer): ComplexArray {
     return this.FFT().map(filterer).InvFFT();
   }
 }
 
-function ensureComplexArray(input) {
+function ensureComplexArray(input): ComplexArray {
   return input instanceof ComplexArray && input || new ComplexArray(input);
 }
 
-function fft(input, inverse) {
-  const n = input.length;
+function fft(input: ComplexArray, inverse: boolean): ComplexArray {
+  const n: number = input.length;
 
-  if (n & (n - 1)) {
-    return FFT_Recursive(input, inverse);
-  } else {
-    return FFT_2_Iterative(input, inverse);
-  }
+  return n & (n - 1)? FFT_Recursive(input, inverse) : FFT_2_Iterative(input, inverse);
 }
 
-function FFT_Recursive(input, inverse) {
-  const n = input.length;
+function FFT_Recursive(input: ComplexArray, inverse: boolean): ComplexArray {
+  const n: number = input.length;
 
-  if (n === 1) {
-    return input;
-  }
+  if (n === 1) return input;
 
-  const output = new ComplexArray(n, input.ArrayType);
+  const output: ComplexArray = new ComplexArray(n, input.ArrayType);
 
   // Use the lowest odd factor, so we are able to use FFT_2_Iterative in the
   // recursive transforms optimally.
-  const p = LowestOddFactor(n);
-  const m = n / p;
-  const normalisation = 1 / Math.sqrt(p);
+  const p: number = LowestOddFactor(n);
+  const m: number = n / p;
+  const normalisation: number = 1 / Math.sqrt(p);
   let recursive_result = new ComplexArray(m, input.ArrayType);
 
   // Loops go like O(n Σ p_i), where p_i are the prime factors of n.
@@ -75,14 +70,14 @@ function FFT_Recursive(input, inverse) {
       recursive_result = fft(recursive_result, inverse);
     }
 
-    const del_f_r = Math.cos(2*PI*j/n);
-    const del_f_i = (inverse ? -1 : 1) * Math.sin(2*PI*j/n);
-    let f_r = 1;
-    let f_i = 0;
+    const del_f_r: number = Math.cos(2*PI*j/n);
+    const del_f_i: number = (inverse ? -1 : 1) * Math.sin(2*PI*j/n);
+    let f_r: number = 1;
+    let f_i: number = 0;
 
     for(let i = 0; i < n; i++) {
-      const _real = recursive_result.real[i % m];
-      const _imag = recursive_result.imag[i % m];
+      const _real: number = recursive_result.real[i % m];
+      const _imag: number = recursive_result.imag[i % m];
 
       output.real[i] += f_r * _real - f_i * _imag;
       output.imag[i] += f_r * _imag + f_i * _real;
@@ -104,23 +99,25 @@ function FFT_Recursive(input, inverse) {
   return input;
 }
 
-function FFT_2_Iterative(input, inverse) {
-  const n = input.length;
+function FFT_2_Iterative(input: ComplexArray, inverse: boolean): ComplexArray {
+  const n: number = input.length;
 
-  const output = BitReverseComplexArray(input);
-  const output_r = output.real;
-  const output_i = output.imag;
+  const output: ComplexArray = BitReverseComplexArray(input);
+  const [output_r, output_i] = [output.real, output.imag];
+
   // Loops go like O(n log n):
   //   width ~ log n; i,j ~ n
-  let width = 1;
+  let width: number = 1;
   while (width < n) {
-    const del_f_r = Math.cos(PI/width);
-    const del_f_i = (inverse ? -1 : 1) * Math.sin(PI/width);
-    for (let i = 0; i < n/(2*width); i++) {
-      let f_r = 1;
-      let f_i = 0;
-      for (let j = 0; j < width; j++) {
-        const l_index = 2*i*width + j;
+    const del_f_r: number = Math.cos(PI/width);
+    const del_f_i: number = (inverse ? -1 : 1) * Math.sin(PI/width);
+    var i:number = 0
+    for (; i < n / ( 2 * width); ++i) {
+      let f_r: number = 1;
+      let f_i: number = 0;
+      var j: number = 0;
+      for (; j < width; j++) {
+        const l_index = 2 * i * width + j;
         const r_index = l_index + width;
 
         const left_r = output_r[l_index];
@@ -145,7 +142,7 @@ function FFT_2_Iterative(input, inverse) {
   return output;
 }
 
-function BitReverseIndex(index, n) {
+function BitReverseIndex(index: number, n: number): number {
   let bitreversed_index = 0;
 
   while (n > 1) {
@@ -157,12 +154,12 @@ function BitReverseIndex(index, n) {
   return bitreversed_index;
 }
 
-function BitReverseComplexArray(array) {
-  const n = array.length;
-  const flips = new Set();
+function BitReverseComplexArray(array: ComplexArray): ComplexArray {
+  const n: number = array.length;
+  const flips: Set<number> = new Set();
 
   for(let i = 0; i < n; i++) {
-    const r_i = BitReverseIndex(i, n);
+    const r_i: number = BitReverseIndex(i, n);
 
     if (flips.has(i)) continue;
 
@@ -175,9 +172,9 @@ function BitReverseComplexArray(array) {
   return array;
 }
 
-function LowestOddFactor(n) {
-  const sqrt_n = Math.sqrt(n);
-  let factor = 3;
+function LowestOddFactor(n: number): number {
+  const sqrt_n: number = Math.sqrt(n);
+  let factor: number = 3;
 
   while(factor <= sqrt_n) {
     if (n % factor === 0) return factor;
