@@ -1,13 +1,13 @@
-# jsfft
+# typefft
 
-Small, efficient Javascript FFT implementation for node or the browser.
+Small, efficient TYPE FFT implementation for node or the browser.
 
 ## Usage
 
-JSFFT ships with **ComplexArray** which can be operated on:
+TYPE FFT ships with **ComplexArray** which can be operated on:
 
 ```javascript
-const fft = require('jsfft');
+const fft = require('typefft');
 
 // Use the in-place mapper to populate the data.
 const data = new fft.ComplexArray(512).map((value, i, n) => {
@@ -42,7 +42,7 @@ const filtered = data.frequencyMap((frequency, i, n) => {
 
 ## Conventions
 
-JSFFT uses the normalization convention that is symmetric between the forward and
+TYPE FFT uses the normalization convention that is symmetric between the forward and
 reverse transform.  With `N` data points, the transform is normalized by a factor of `√N`:
 
 ```
@@ -54,4 +54,4 @@ fft(k) =   -    ∑  f(j) 𝐞
 ## Other Implementations
 
 [DSP](https://github.com/corbanbrook/dsp.js) is a full featured Digital Signal
-Processing library in JS which includes a JS FFT implementation.
+Processing library in JS which includes a TYPE FFT implementation.
