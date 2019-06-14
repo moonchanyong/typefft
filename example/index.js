@@ -1,4 +1,4 @@
-import {ComplexArray} from '../lib/fft';
+import {ComplexArray} from '../dist/fft';
 
 function drawToCanvas(element_id, data) {
   const element = document.getElementById(element_id);
