@@ -1,42 +1,43 @@
 {
-  "name": "jsfft",
-  "version": "0.0.4",
-  "author": "Nick Jones",
-  "description": "A lightweight FFT implementation for Javascript",
+  "name": "typefft",
+  "version": "0.0.1",
+  "author": "chanyong.moon",
+  "description": "A lightweight FFT implementation for Typescript",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dntj/jsfft.git"
+    "url": "git+https://github.com/moonchanyong/typefft.git"
   },
   "engines": {
-    "node": ">=4.0.0"
   },
-  "main": "./dist/fft",
+  "main": "./dist/fft.ts",
+  "types": "declaration/fft.d.ts",
   "scripts": {
     "start": "webpack-dev-server",
-    "build": "babel -d dist/ lib/; webpack example/index.js",
-    "clean": "rm -rf dist",
+    "build": "tsc -p tsconfig.declaration.json && tsc --outDir dist/ lib/*",
+    "declaration":"tsc -p tsconfig.declaration.json",
+    "demo-build": "npm run build && webpack",
+    "clean": "rm -rf dist declaration",
     "prepublish": "npm run build",
-    "test": "mocha --compilers js:babel-register"
+    "test": "TS_NODE_PROJECT=./tsconfig.test.json mocha ./test/*.ts --require ts-node/register"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-register": "^6.26.0",
-    "mocha": "^5.2.0",
+    "@types/mocha": "^5.2.7",
+    "mocha": "^6.1.4",
+    "ts-node": "^8.2.0",
+    "typescript": "^3.5.2",
     "webpack": "^2.7.0",
     "webpack-dev-server": "^3.1.14"
   },
   "bugs": {
-    "url": "https://github.com/dntj/jsfft/issues"
+    "url": "https://github.com/moonchanyong/typefft/issues"
   },
-  "homepage": "https://github.com/dntj/jsfft#readme",
+  "homepage": "https://github.com/moonchanyong/typefft",
   "directories": {
     "example": "example",
     "test": "test"
   },
   "files": [
     "dist"
-  ],
-  "dependencies": {}
+  ]
 }
