@@ -33,7 +33,7 @@ export function assertFFTMatches(original, expected) {
   assertComplexArraysAlmostEqual(DFT(input), FFT(input));
 }
 
-export function DFT(input) {
+export function DFT(input): ComplexArray {
   const n = input.length;
   const amplitude = 1 / Math.sqrt(n);
 

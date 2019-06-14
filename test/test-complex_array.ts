@@ -1,6 +1,7 @@
 import * as assert from 'assert';
 import ComplexArray from '../lib/complex_array';
 
+
 function assertArrayEquals(first, second) {
   const message = `${first} != ${second}`;
 
@@ -114,4 +115,12 @@ describe('ComplexArray', () => {
       assert.equal(3, sum);
     });
   });
+
+  describe('#toString', () => {
+    it('should return String Array', () => {
+      const a = new ComplexArray([1, 2]);
+      assert.equal(a.toString(), "[(1.00, 0.00), (2.00, 0.00)]");
+    })
+  })
 });
+
